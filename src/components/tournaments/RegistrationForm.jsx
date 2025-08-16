@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 
 const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -10,30 +13,13 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
     category: tournament?.category || ''
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    const registrationData = {
-      playerName: `${formData.firstName} ${formData.lastName}`,
-      email: formData.email,
-      phone: formData.phone,
-      tournament: tournament?.name || '',
-      category: formData.category
-    };
-
-    onSubmit(registrationData);
-    
-    // Reset form
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      category: ''
-    });
-    
-    alert('Registration submitted! You will receive email confirmation once approved.');
-  };
+  // Update category ako se tournament promijeni
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      category: tournament?.category || ''
+    }));
+  }, [tournament]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,9 +29,36 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const registrationData = {
+      playerName: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.phone,
+      tournament: tournament?.name || '',
+      category: formData.category
+    };
+
+    onSubmit(registrationData);
+
+    // Reset form
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      category: tournament?.category || ''
+    });
+
+    // Redirect na listu turnira
+    navigate('/');
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">Tournament Registration</h2>
+      
       {tournament && (
         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
           <p className="font-semibold">{tournament.name}</p>
@@ -55,9 +68,7 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            First Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
           <input
             type="text"
             name="firstName"
@@ -67,11 +78,9 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Last Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
           <input
             type="text"
             name="lastName"
@@ -83,9 +92,7 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             name="email"
@@ -97,9 +104,7 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
           <input
             type="tel"
             name="phone"
@@ -111,9 +116,7 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
           <select
             name="category"
             required
@@ -133,7 +136,10 @@ const RegistrationForm = ({ tournament, onSubmit, onCancel }) => {
           <Button
             type="button"
             variant="secondary"
-            onClick={onCancel}
+            onClick={() => {
+              onCancel && onCancel();
+              navigate('/');
+            }}
             className="flex-1"
           >
             Cancel

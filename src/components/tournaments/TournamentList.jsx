@@ -1,7 +1,9 @@
 import React from 'react';
 import TournamentCard from './TournamentCard';
 
-const TournamentList = ({ tournaments, isAdmin, onRegister }) => {
+const TournamentList = ({ tournaments = [], isAdmin = false, setSelectedTournament }) => {
+  if (tournaments.length === 0) return <p className="text-center py-20 text-gray-500">No tournaments available</p>;
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Available Tournaments</h2>
@@ -9,9 +11,9 @@ const TournamentList = ({ tournaments, isAdmin, onRegister }) => {
         {tournaments.map(tournament => (
           <TournamentCard 
             key={tournament.id} 
-            tournament={tournament}
-            isAdmin={isAdmin}
-            onRegister={onRegister}
+            tournament={tournament} 
+            isAdmin={isAdmin} 
+            setSelectedTournament={setSelectedTournament} 
           />
         ))}
       </div>
