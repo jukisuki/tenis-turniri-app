@@ -1,7 +1,7 @@
 import React from 'react';
 import TournamentCard from './TournamentCard';
 
-const TournamentList = ({ tournaments = [], isAdmin = false, setSelectedTournament }) => {
+const TournamentList = ({ tournaments = [], isAdmin = false, onRegister }) => {
   if (tournaments.length === 0) return <p className="text-center py-20 text-gray-500">No tournaments available</p>;
 
   return (
@@ -13,7 +13,7 @@ const TournamentList = ({ tournaments = [], isAdmin = false, setSelectedTourname
             key={tournament.id} 
             tournament={tournament} 
             isAdmin={isAdmin} 
-            setSelectedTournament={setSelectedTournament} 
+            onRegister={onRegister} 
           />
         ))}
       </div>

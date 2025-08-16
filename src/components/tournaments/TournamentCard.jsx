@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import { formatDate } from '../../utils/dateUtils';
 
-const TournamentCard = ({ tournament, isAdmin, setSelectedTournament }) => {
+const TournamentCard = ({ tournament, isAdmin, onRegister }) => {
   const navigate = useNavigate();
 
   const handleRegister = () => {
-    setSelectedTournament(tournament); // spremi turnir u parent state
+    onRegister(tournament); // spremi turnir u parent state
     navigate('/register'); // vodi na registration stranicu
   };
 

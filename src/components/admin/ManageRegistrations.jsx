@@ -1,7 +1,7 @@
 import React from 'react';
 import RegistrationCard from './RegistrationCard';
 
-const ManageRegistrations = ({ registrations, onApprove }) => {
+const ManageRegistrations = ({ registrations, onApprove, onDeny }) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold mb-6">Manage Registrations</h2>
@@ -15,6 +15,7 @@ const ManageRegistrations = ({ registrations, onApprove }) => {
             key={registration.id}
             registration={registration}
             onApprove={onApprove}
+            onDeny={onDeny}
           />
         ))
       )}

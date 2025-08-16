@@ -60,10 +60,17 @@ export const useTournamentData = () => {
     ));
   };
 
+  const denyRegistration = (id) => {
+    setRegistrations(registrations.map(reg => 
+      reg.id === id ? { ...reg, status: 'denied' } : reg
+    ));
+  };
+
   return {
     tournaments,
     registrations,
     addRegistration,
-    approveRegistration
+    approveRegistration,
+    denyRegistration
   };
 };
