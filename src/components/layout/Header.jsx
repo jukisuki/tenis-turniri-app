@@ -1,25 +1,16 @@
 import React from 'react';
 import { Menu, Trophy } from 'lucide-react';
 
-const Header = ({ onMenuClick }) => {
+export default function Header({ onMenuClick }) {
   return (
-    <header className="lg:hidden bg-blue-600 text-white p-4 flex justify-between items-center">
-      {/* Logo / naziv aplikacije */}
-      <h1 className="text-lg font-semibold flex items-center">
-        <Trophy className="mr-2 h-5 w-5" />
-        Tennis Tournaments
-      </h1>
-
-      {/* Hamburger / menu toggle */}
-      <button
-        onClick={onMenuClick}
-        className="focus:outline-none focus:ring-2 focus:ring-white rounded"
-        aria-label="Open menu"
-      >
+    <header className="lg:hidden bg-blue-700 text-white px-4 py-3 flex justify-between items-center shadow-md">
+      <div className="flex items-center gap-2">
+        <Trophy className="h-5 w-5 text-yellow-400" />
+        <span className="font-semibold">Tenis Klub</span>
+      </div>
+      <button onClick={onMenuClick} aria-label="Otvori menu" className="p-1 rounded focus:outline-none focus:ring-2 focus:ring-white">
         <Menu className="h-6 w-6" />
       </button>
     </header>
   );
-};
-
-export default Header;
+}
