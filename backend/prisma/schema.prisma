@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Uloga {
+  IGRAC
+  ADMIN
+}
+
+enum StatusTurnira {
+  DRAFT
+  OTVOREN
+  ZATVOREN
+  ZAVRSEN
+}
+
+enum StatusPrijave {
+  NA_CEKANJU
+  ODOBREN
+  ODBIJEN
+}
+
+model Korisnik {
+  id           Int      @id @default(autoincrement())
+  ime          String
+  prezime      String
+  email        String   @unique
+  lozinkaHash  String
+  uloga        Uloga    @default(IGRAC)
+  rejting      Int      @default(1000)
+  telefon      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  prijave          Prijava[]
+  mecheviKaoIgrac1 Mec[]          @relation("Igrac1")
+  mecheviKaoIgrac2 Mec[]          @relation("Igrac2")
+  pobjede          Mec[]          @relation("Pobjednik")
+  historijaRejtinga HistorijaRejtinga[]
+  vijesti          Vijest[]
+}
+
+model Turnir {
+  id          Int           @id @default(autoincrement())
+  naziv       String
+  datum       DateTime
+  rokPrijave  DateTime
+  kategorija  String
+  maxIgraca   Int
+  opis        String?
+  status      StatusTurnira @default(OTVOREN)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  prijave  Prijava[]
+  mecevi   Mec[]
+}
+
+model Prijava {
+  id        Int          @id @default(autoincrement())
+  status    StatusPrijave @default(NA_CEKANJU)
+  createdAt DateTime     @default(now())
+
+  igrac      Korisnik @relation(fields: [igracId], references: [id])
+  igracId    Int
+
+  turnir     Turnir   @relation(fields: [turnirId], references: [id])
+  turnirId   Int
+
+  @@unique([igracId, turnirId])
+}
+
+model Mec {
+  id        Int       @id @default(autoincrement())
+  rezultat  String?
+  datum     DateTime?
+  runda     String?
+  createdAt DateTime  @default(now())
+
+  turnir     Turnir   @relation(fields: [turnirId], references: [id])
+  turnirId   Int
+
+  igrac1     Korisnik @relation("Igrac1", fields: [igrac1Id], references: [id])
+  igrac1Id   Int
+
+  igrac2     Korisnik @relation("Igrac2", fields: [igrac2Id], references: [id])
+  igrac2Id   Int
+
+  pobjednik  Korisnik? @relation("Pobjednik", fields: [pobjednikId], references: [id])
+  pobjednikId Int?
+
+  historijaRejtinga HistorijaRejtinga[]
+}
+
+model HistorijaRejtinga {
+  id          Int      @id @default(autoincrement())
+  promjena    Int
+  noviRejting Int
+  createdAt   DateTime @default(now())
+
+  igrac    Korisnik @relation(fields: [igracId], references: [id])
+  igracId  Int
+
+  mec      Mec  @relation(fields: [mecId], references: [id])
+  mecId    Int
+}
+
+model Vijest {
+  id        Int      @id @default(autoincrement())
+  naslov    String
+  sadrzaj   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  autor    Korisnik @relation(fields: [autorId], references: [id])
+  autorId  Int
+}
